@@ -20,7 +20,11 @@ public class LexicalAnalyzer {
         this.input = input;
 
     }
-// PANA LA && totul e in regula
+
+    public void resetCompiler(){
+        crChar = 0;
+    }
+
     public Atoms getNextToken() {
         char c = 'c';
         int chStart = 0, state = 0;
@@ -113,7 +117,7 @@ public class LexicalAnalyzer {
                         state = 51;
                     }
                     else if (c == '\u0000') {
-                        tk = new Token(END);
+                        tk = new SimpleToken(END);
                         CompilerController.addToken(tk);
                         return END;
                     }
@@ -126,8 +130,7 @@ public class LexicalAnalyzer {
                 case 2: // ID final STATE
                     chLenght = crChar - chStart;
                     if (!keyWord(createString(chStart,crChar))){
-                        tk = new Token(ID);
-                        tk.setText(createString(chStart,crChar));
+                        tk = new StringToken(ID,createString(chStart,crChar));
                         CompilerController.addToken(tk);
                     }
                     return tk.getCode();
@@ -147,8 +150,7 @@ public class LexicalAnalyzer {
                     break;
                 case 4:
                     chLenght = crChar - chStart;
-                    tk = new Token(CT_INT);
-                    tk.setInteger(Integer.decode(createString(chStart,crChar)));
+                    tk = new IntegerToken(CT_INT,Integer.decode(createString(chStart,crChar)));
                     CompilerController.addToken(tk);
                     return CT_INT;
                 case 5:
@@ -244,8 +246,7 @@ public class LexicalAnalyzer {
                         state = 15;
                     break;
                 case 15:
-                    tk = new Token(CT_REAL);
-                    tk.setDouble(Double.parseDouble(createString(chStart,crChar)));
+                    tk = new RealToken(CT_REAL,Double.parseDouble(createString(chStart,crChar)));
                     CompilerController.addToken(tk);
                     return CT_REAL;
                 case 16:
@@ -266,8 +267,8 @@ public class LexicalAnalyzer {
                         state = 16;
                     break;
                 case 18:
-                    tk = new Token(CT_STRING);
-                    tk.setText(createString(chStart,crChar));
+                    tk = new StringToken(CT_STRING,createString(chStart,crChar));
+                    CompilerController.addToken(tk);
                     return CT_STRING;
                 case 19:
                     if (c == 'a' || c == 'b' || c == 'n' || c == 'f' || c == 'r' || c == 't' || c == 'v' || c == '\'' || c == '?' || c == '"' || c == '\0') {
@@ -298,52 +299,51 @@ public class LexicalAnalyzer {
                     }
                     break;
                 case 23:
-                    tk = new Token(CT_CHAR);
-                    tk.setText(createString(chStart,crChar));
+                    tk = new StringToken(CT_CHAR,createString(chStart,crChar));
                     CompilerController.addToken(tk);
                     return CT_CHAR;
                 case 24:
-                    tk = new Token(COMMA);
+                    tk = new SimpleToken(COMMA);
                     CompilerController.addToken(tk);
                     return COMMA;
                 case 25:
-                    tk = new Token(SEMICOLON);
+                    tk = new SimpleToken(SEMICOLON);
                     CompilerController.addToken(tk);
                     return SEMICOLON;
                 case 26:
-                    tk = new Token(LPAR);
+                    tk = new SimpleToken(LPAR);
                     CompilerController.addToken(tk);
                     return LPAR;
                 case 27:
-                    tk = new Token(RPAR);
+                    tk = new SimpleToken(RPAR);
                     CompilerController.addToken(tk);
                     return RPAR;
                 case 28:
-                    tk = new Token(RBRACKET);
+                    tk = new SimpleToken(RBRACKET);
                     CompilerController.addToken(tk);
                     return RBRACKET;
                 case 29:
-                    tk = new Token(LBRACKET);
+                    tk = new SimpleToken(LBRACKET);
                     CompilerController.addToken(tk);
                     return LBRACKET;
                 case 30:
-                    tk = new Token(LACC);
+                    tk = new SimpleToken(LACC);
                     CompilerController.addToken(tk);
                     return LACC;
                 case 31:
-                    tk = new Token(RACC);
+                    tk = new SimpleToken(RACC);
                     CompilerController.addToken(tk);
                     return RACC;
                 case 32:
-                    tk = new Token(ADD);
+                    tk = new SimpleToken(ADD);
                     CompilerController.addToken(tk);
                     return ADD;
                 case 33:
-                    tk = new Token(SUB);
+                    tk = new SimpleToken(SUB);
                     CompilerController.addToken(tk);
                     return SUB;
                 case 34:
-                    tk = new Token(MUL);
+                    tk = new SimpleToken(MUL);
                     CompilerController.addToken(tk);
                     return MUL;
                 case 35:
@@ -357,7 +357,7 @@ public class LexicalAnalyzer {
                         state = 53;
                     break;
                 case 36:
-                    tk = new Token(DOT);
+                    tk = new SimpleToken(DOT);
                     CompilerController.addToken(tk);
                     return DOT;
                 case 37:
@@ -367,7 +367,7 @@ public class LexicalAnalyzer {
                     }
                     break;
                 case 38:
-                    tk = new Token(OR);
+                    tk = new SimpleToken(OR);
                     CompilerController.addToken(tk);
                     return OR;
                 case 39:
@@ -377,11 +377,11 @@ public class LexicalAnalyzer {
                     } else
                         state = 41;
                 case 40:
-                    tk = new Token(NOTEQ);
+                    tk = new SimpleToken(NOTEQ);
                     CompilerController.addToken(tk);
                     return NOTEQ;
                 case 41:
-                    tk = new Token(NOT);
+                    tk = new SimpleToken(NOT);
                     CompilerController.addToken(tk);
                     return NOT;
                 case 42:
@@ -392,11 +392,11 @@ public class LexicalAnalyzer {
                         state = 45;
                     break;
                 case 43:
-                    tk = new Token(EQUAL);
+                    tk = new SimpleToken(EQUAL);
                     CompilerController.addToken(tk);
                     return EQUAL;
                 case 44:
-                    tk = new Token(ASSIGN);
+                    tk = new SimpleToken(ASSIGN);
                     CompilerController.addToken(tk);
                     return ASSIGN;
                 case 45:
@@ -406,11 +406,11 @@ public class LexicalAnalyzer {
                     } else
                         state = 46;
                 case 46:
-                    tk = new Token(GREATER);
+                    tk = new SimpleToken(GREATER);
                     CompilerController.addToken(tk);
                     return GREATER;
                 case 47:
-                    tk = new Token(GREATEREQ);
+                    tk = new SimpleToken(GREATEREQ);
                     CompilerController.addToken(tk);
                     return GREATEREQ;
                 case 48:
@@ -420,11 +420,11 @@ public class LexicalAnalyzer {
                     } else
                         state = 50;
                 case 49:
-                    tk = new Token(LESS);
+                    tk = new SimpleToken(LESS);
                     CompilerController.addToken(tk);
                     return LESS;
                 case 50:
-                    tk = new Token(LESSEQ);
+                    tk = new SimpleToken(LESSEQ);
                     CompilerController.addToken(tk);
                     return LESSEQ;
                 case 51:
@@ -434,26 +434,33 @@ public class LexicalAnalyzer {
                     }
                     break;
                 case 52:
-                    tk = new Token(AND);
+                    tk = new SimpleToken(AND);
                     CompilerController.addToken(tk);
                     return AND;
                 case 53:
-                    tk = new Token(DIV);
+                    tk = new SimpleToken(DIV);
                     CompilerController.addToken(tk);
                     return DIV;
                 case 54:
                     if (c == '*') {
                         crChar++;
                         state = 55;
-                    } else
+                    } else if(c == '\n'){
+                        crChar++;
+                        CompilerController.incrementLine();
+                    }else
                         crChar++;
                     break;
                 case 55:
                     if (c == '/') {
                         crChar++;
                         state = 56;
-                    } else if (c == '*')
+                    } else if (c == '*') {
                         crChar++;
+                    }else if(c == '\n'){
+                        crChar++;
+                        CompilerController.incrementLine();
+                    }
                     break;
                 case 56:
                     crChar++;
@@ -482,57 +489,57 @@ public class LexicalAnalyzer {
 
     private boolean keyWord(String keyWord){
         if(keyWord.equalsIgnoreCase("break")) {
-            tk = new Token(BREAK);
+            tk = new SimpleToken(BREAK);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("char")){
-            tk=new Token(CHAR);
+            tk=new SimpleToken(CHAR);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("double")){
-            tk=new Token(DOUBLE);
+            tk=new SimpleToken(DOUBLE);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("else")){
-            tk=new Token(ELSE);
+            tk=new SimpleToken(ELSE);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("for")){
-            tk=new Token(FOR);
+            tk=new SimpleToken(FOR);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("if")){
-            tk=new Token(IF);
+            tk=new SimpleToken(IF);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("int")) {
-            tk = new Token(INT);
+            tk = new SimpleToken(INT);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("return")){
-            tk = new Token(RETURN);
+            tk = new SimpleToken(RETURN);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("struct")){
-            tk = new Token(STRUCT);
+            tk = new SimpleToken(STRUCT);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("void")){
-            tk = new Token(VOID);
+            tk = new SimpleToken(VOID);
             CompilerController.addToken(tk);
             return true;
         }
         if(keyWord.equalsIgnoreCase("while")){
-            tk = new Token(WHILE);
+            tk = new SimpleToken(WHILE);
             CompilerController.addToken(tk);
             return true;
         }

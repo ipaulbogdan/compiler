@@ -32,6 +32,8 @@ public class CompilerController {
 
     private void compile(String input){
         LexicalAnalyzer lexialAnalyzer = new LexicalAnalyzer(input);
+        lexialAnalyzer.resetCompiler();
+        line=0;
         while(lexialAnalyzer.getNextToken()!=END){
 
         }
@@ -41,12 +43,10 @@ public class CompilerController {
 
     private void printTokens() {
         for(Token tk : tokens){
-            System.out.println(tk.getCode()+" "+
-                                tk.getInt()+" "+
-                                tk.getReal()+" "+
-                                tk.getText());
+            System.out.println(tk);
+
         }
-    }
+}
 
 
     public static void addToken(Token token){
@@ -56,5 +56,7 @@ public class CompilerController {
     public static void incrementLine(){
         line++;
     }
+
+    public static int getLine(){return line;}
 
 }

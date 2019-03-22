@@ -2,51 +2,21 @@ package com.idorasi.compiler.utiles;
 
 import com.idorasi.compiler.modules.Atoms;
 
-public class Token {
+abstract public class Token {
 
     private Atoms code;
-    private Union union;
-    private int line;
+    protected int line;
 
-    public Token(Atoms code){
+    public Token(Atoms code,int line){
         this.code = code;
-        this.union = new Union();
-        this.line = 0;
-    }
-
-    public Atoms getCode() {
-        return code;
-    }
-
-    public int getInt(){
-        return union.getInteger();
-    }
-
-    public String getText(){
-        return union.getText();
-    }
-
-    public double getReal(){
-        return union.getReal();
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line){
         this.line = line;
     }
 
-    public void setInteger(int integer){
-        union.setInteger(integer);
+    protected Atoms getCode() {
+        return code;
     }
 
-    public void setText(String text){
-        this.union.setText(text);
-    }
 
-    public void setDouble(double real){
-        this.union.setReal(real);
-    }
+
+    abstract public String toString();
 }
