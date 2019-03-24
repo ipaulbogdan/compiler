@@ -1,4 +1,4 @@
-package com.idorasi.compiler.utiles;
+package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.CompilerController;
 import com.idorasi.compiler.modules.Atoms;

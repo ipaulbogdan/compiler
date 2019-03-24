@@ -1,4 +1,4 @@
-package com.idorasi.compiler.utiles;
+package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.modules.Atoms;
 
@@ -12,7 +12,7 @@ abstract public class Token {
         this.line = line;
     }
 
-    protected Atoms getCode() {
+    public Atoms getCode() {
         return code;
     }
 

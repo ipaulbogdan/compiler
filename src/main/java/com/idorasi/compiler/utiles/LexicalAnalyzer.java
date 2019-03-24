@@ -2,6 +2,7 @@ package com.idorasi.compiler.utiles;
 
 import com.idorasi.compiler.CompilerController;
 import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Tokens.*;
 
 import static com.idorasi.compiler.modules.Atoms.*;
 
@@ -479,8 +480,15 @@ public class LexicalAnalyzer {
     private String createString(int sStart,int sCurrent){
             String toBeCreated = "";
             int i;
+            char c;
             for(i=sStart;i<sCurrent;i++){
-                toBeCreated+=input.charAt(i);
+                c=input.charAt(i);
+                if(c != '\\') {
+                    toBeCreated += c;
+                }else if(input.charAt(i+1) == 't') {
+                    toBeCreated += "\t";
+                    i++;
+                }
             }
 
             return toBeCreated;
