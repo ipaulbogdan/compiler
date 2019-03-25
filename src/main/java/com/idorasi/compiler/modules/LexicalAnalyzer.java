@@ -1,10 +1,10 @@
-package com.idorasi.compiler.utiles;
+package com.idorasi.compiler.modules;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.modules.Atoms;
-import com.idorasi.compiler.utiles.Tokens.*;
+import com.idorasi.compiler.utiles.Atoms;
+import com.idorasi.compiler.modules.Tokens.*;
 
-import static com.idorasi.compiler.modules.Atoms.*;
+import static com.idorasi.compiler.utiles.Atoms.*;
 
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
@@ -478,20 +478,27 @@ public class LexicalAnalyzer {
     }
 
     private String createString(int sStart,int sCurrent){
-            String toBeCreated = "";
+
+            StringBuffer toBeCreated = new StringBuffer();
             int i;
             char c;
             for(i=sStart;i<sCurrent;i++){
                 c=input.charAt(i);
                 if(c != '\\') {
-                    toBeCreated += c;
+                    toBeCreated.append(c);
                 }else if(input.charAt(i+1) == 't') {
-                    toBeCreated += "\t";
+                    toBeCreated.append("\t");
+                    i++;
+                }else if(input.charAt(i+1) == '\\'){
+                    toBeCreated.append('\\');
+                    i++;
+                }else if(input.charAt(i+1) == '\n'){
+                    toBeCreated.append("\n");
                     i++;
                 }
             }
 
-            return toBeCreated;
+            return toBeCreated.toString();
 
     }
 

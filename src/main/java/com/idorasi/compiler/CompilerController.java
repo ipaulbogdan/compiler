@@ -1,7 +1,7 @@
 package com.idorasi.compiler;
 
-import com.idorasi.compiler.utiles.LexicalAnalyzer;
-import com.idorasi.compiler.utiles.Tokens.Token;
+import com.idorasi.compiler.modules.LexicalAnalyzer;
+import com.idorasi.compiler.modules.Tokens.Token;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.idorasi.compiler.modules.Atoms.END;
+import static com.idorasi.compiler.utiles.Atoms.END;
 
 
 @RestController
