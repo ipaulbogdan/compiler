@@ -1,6 +1,6 @@
-package com.idorasi.compiler.modules;
+package com.idorasi.compiler.utiles;
 
-public enum Atoms {
+public enum Atom {
 
     ID,END,
     CT_INT,CT_REAL,CT_STRING,CT_CHAR,

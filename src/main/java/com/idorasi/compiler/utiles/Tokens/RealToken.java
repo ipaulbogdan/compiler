@@ -1,13 +1,13 @@
 package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Atom;
 
 public class RealToken extends Token{
 
      private double dNumber;
 
-    public RealToken(Atoms code,double dNumber) {
+    public RealToken(Atom code, double dNumber) {
         super(code, CompilerController.getLine());
         this.dNumber = dNumber;
     }

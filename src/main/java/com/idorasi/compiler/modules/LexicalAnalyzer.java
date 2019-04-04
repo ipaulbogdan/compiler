@@ -1,10 +1,10 @@
-package com.idorasi.compiler.utiles;
+package com.idorasi.compiler.modules;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Atom;
 import com.idorasi.compiler.utiles.Tokens.*;
 
-import static com.idorasi.compiler.modules.Atoms.*;
+import static com.idorasi.compiler.utiles.Atom.*;
 
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
@@ -26,7 +26,7 @@ public class LexicalAnalyzer {
         crChar = 0;
     }
 
-    public Atoms getNextToken() {
+    public Atom getNextToken() {
         char c = 'c';
         int chStart = 0, state = 0;
         int chLenght = 0;

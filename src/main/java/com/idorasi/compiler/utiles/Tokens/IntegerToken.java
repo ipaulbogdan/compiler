@@ -1,13 +1,13 @@
 package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Atom;
 
 public class IntegerToken extends Token {
 
     private int intNumber;
 
-    public IntegerToken(Atoms code,int intNumber) {
+    public IntegerToken(Atom code, int intNumber) {
         super(code, CompilerController.getLine());
         this.intNumber = intNumber;
     }

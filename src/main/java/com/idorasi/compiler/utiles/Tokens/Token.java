@@ -1,18 +1,18 @@
 package com.idorasi.compiler.utiles.Tokens;
 
-import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Atom;
 
 abstract public class Token {
 
-    private Atoms code;
+    private Atom code;
     protected int line;
 
-    public Token(Atoms code,int line){
+    public Token(Atom code, int line){
         this.code = code;
         this.line = line;
     }
 
-    public Atoms getCode() {
+    public Atom getCode() {
         return code;
     }
 

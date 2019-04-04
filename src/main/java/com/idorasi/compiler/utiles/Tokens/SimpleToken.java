@@ -1,12 +1,12 @@
 package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Atom;
 
 public class SimpleToken extends Token{
 
 
-    public SimpleToken(Atoms code) {
+    public SimpleToken(Atom code) {
         super(code, CompilerController.getLine());
     }
 

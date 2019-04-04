@@ -1,13 +1,13 @@
 package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.modules.Atoms;
+import com.idorasi.compiler.utiles.Atom;
 
 public class StringToken extends Token {
 
     private String text;
 
-    public StringToken(Atoms code,String text) {
+    public StringToken(Atom code, String text) {
         super(code, CompilerController.getLine());
         this.text = text;
     }
