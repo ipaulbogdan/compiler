@@ -1,6 +1,7 @@
 package com.idorasi.compiler;
 
 import com.idorasi.compiler.modules.LexicalAnalyzer;
+import com.idorasi.compiler.modules.SyntacticAnalyzer;
 import com.idorasi.compiler.utiles.Tokens.Token;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,8 @@ public class CompilerController {
 
         }
         printTokens();
+        SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(tokens);
+
 
     }
 

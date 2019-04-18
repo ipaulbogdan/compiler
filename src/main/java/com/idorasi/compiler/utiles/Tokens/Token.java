@@ -16,6 +16,8 @@ abstract public class Token {
         return code;
     }
 
+    public int getLine(){return line;}
+
 
 
     abstract public String toString();
