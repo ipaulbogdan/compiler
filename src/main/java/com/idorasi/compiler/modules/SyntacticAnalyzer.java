@@ -183,8 +183,70 @@ public class SyntacticAnalyzer {
 
 
     private boolean stm() {
+        cache();
+        if(stmCompound()){
+            return true;
+        }else if(consume(IF)){
+                if(consume(LPAR)){
+                    if(expr()){
+                        if(consume(RPAR)){
+                            if(stm()){
+                                if(consume(ELSE)){
+                                    if(stm()){
+                                        return true;
+                                    }else throw new missingTokenException(atomIterator.next(),"Expecting statement after ELSE");
+                                }
+                                return true;
+                            }else throw new missingTokenException(atomIterator.next(),"Missing statement after IF");
+                        }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
+                    }else throw new missingTokenException(atomIterator.next(),"Missing EXPR in IF");
+                }else throw new missingTokenException(atomIterator.next(),"Missing LPAR afer IF");
+        }else if(consume(WHILE)){
+            if(consume(LPAR)){
+                if(expr()){
+                    if(consume(RPAR)){
+                        if(stm()){
+                            return true;
+                        }else throw new missingTokenException(atomIterator.next(),"Missing Statement after WHILE");
+                    }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
+                }else throw new missingTokenException(atomIterator.next(),"Missing EXPR");
+            }else throw new missingTokenException(atomIterator.next(),"Missing LPAR");
+        }else if(consume(FOR)){
+            if(consume(LPAR)){
+                expr();
+                if(consume(SEMICOLON)){
+                    expr();
+                    if(consume(SEMICOLON)){
+                        expr();
+                        if(consume(RPAR)){
+                            if(stm()){
+                                return true;
+                            }else throw new missingTokenException(atomIterator.next(),"Missing Statement after FOR");
+                        }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
 
-       return false;
+                    }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON");
+                }else throw  new missingTokenException(atomIterator.next(),"Missing SEMICOLON");
+            }else throw new missingTokenException(atomIterator.next(),"Missing LPAR");
+
+        }else if(consume(BREAK)){
+            if(consume(SEMICOLON)){
+                return true;
+            }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON");
+        }else if(consume(RETURN)){
+            expr();
+            if(consume(SEMICOLON)){
+                return true;
+            }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON after RETURN");
+        }else{
+            expr();
+            if(consume(SEMICOLON)){
+                return true;
+            }
+        }
+
+        restoreFromCache();
+        return false;
+
     }
 
     private boolean expr(){
@@ -206,8 +268,120 @@ public class SyntacticAnalyzer {
         restoreFromCache();
         return false;
     }
+    private boolean exprOrPrim(){
+        if(consume(OR)){
+            if(exprAnd()){
+                if(exprOrPrim()){
+                    return true;
+                }
+            }
+        }
+        return true;
+    }
 
     private boolean exprOr() {
+        cache();
+        if(exprAnd()){
+            if(exprOrPrim()){
+                return true;
+            }
+        }
+        restoreFromCache();
+        return false;
+    }
+
+    private boolean exprAndPrim() {
+        if(consume(AND)){
+            if(exprEq()){
+                if(exprAndPrim()){
+                    return true;
+                }
+            }throw new missingTokenException(atomIterator.next(),"Missing operand after AND");
+        }
+
+        return true;
+    }
+
+    private boolean exprAnd() {
+        cache();
+        if(exprEq()){
+            if(exprAndPrim()){
+                return true;
+
+            }
+        }
+        restoreFromCache();
+        return false;
+    }
+
+    private boolean exprEqPrim() {
+        if(consume(EQUAL) || consume(NOTEQ)){
+            if(exprRel()){
+                if(exprEqPrim()){
+                    return true;
+                }
+            }else throw new missingTokenException(atomIterator.next(),"Missing operand after eq operand");
+        }
+        return true;
+    }
+
+    private boolean exprEq() {
+        cache();
+        if(exprRel()){
+            if(exprEqPrim()){
+                return true;
+            }
+        }
+        restoreFromCache();
+        return false;
+    }
+
+    private boolean exprRelPrim() {
+        if(consume(LESS) || consume(LESSEQ) || consume(GREATER) || consume(GREATEREQ)){
+            if(exprAdd()){
+                if(exprRelPrim()){
+                    return true;
+                }
+            }else throw new missingTokenException(atomIterator.next(),"Missing operand");
+        }
+
+        return true;
+    }
+
+    private boolean exprRel() {
+        cache();
+        if(exprAdd()){
+            if(exprRelPrim()){
+                return true;
+            }
+        }
+        restoreFromCache();
+        return false;
+    }
+
+    private boolean exprAddPrim() {
+        if(consume(ADD) || consume(SUB)){
+            if(exprMul()){
+                if(exprAddPrim()){
+                    return true;
+                }
+            }throw new missingTokenException(atomIterator.next(),"Missing operand after + or -");
+        }
+        return true;
+    }
+
+    private boolean exprAdd() {
+        cache();
+        if(exprMul()){
+            if(exprAddPrim()){
+                return true;
+            }
+        }
+        restoreFromCache();
+        return true;
+    }
+
+    private boolean exprMul() {
         return false;
     }
 
@@ -230,7 +404,3 @@ public class SyntacticAnalyzer {
 
     }
 }
-
-
-
-

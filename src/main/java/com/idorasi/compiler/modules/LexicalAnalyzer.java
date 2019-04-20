@@ -29,7 +29,6 @@ public class LexicalAnalyzer {
     public Atom getNextToken() {
         char c = 'c';
         int chStart = 0, state = 0;
-        int chLenght = 0;
         for (; ; ) {
             c = input.charAt(crChar);
             switch (state) {
@@ -129,7 +128,6 @@ public class LexicalAnalyzer {
                     else state = 2;
                     break;
                 case 2: // ID final STATE
-                    chLenght = crChar - chStart;
                     if (!keyWord(createString(chStart,crChar))){
                         tk = new StringToken(ID,createString(chStart,crChar));
                         CompilerController.addToken(tk);
@@ -150,7 +148,6 @@ public class LexicalAnalyzer {
                     }
                     break;
                 case 4:
-                    chLenght = crChar - chStart;
                     tk = new IntegerToken(CT_INT,Integer.decode(createString(chStart,crChar)));
                     CompilerController.addToken(tk);
                     return CT_INT;
