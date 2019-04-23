@@ -33,10 +33,8 @@ public class CompilerController {
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(input);
         lexicalAnalyzer.resetCompiler();
         line=1;
-        while(lexicalAnalyzer.getNextToken()!=END){
+        while(lexicalAnalyzer.getNextToken()!=END){ }
 
-        }
-        printTokens();
         SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(tokens);
 
 

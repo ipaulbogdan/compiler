@@ -2,6 +2,7 @@ package com.idorasi.compiler.modules;
 
 import com.idorasi.compiler.exceptions.missingTokenException;
 import com.idorasi.compiler.utiles.Atom;
+import com.idorasi.compiler.utiles.Cache;
 import com.idorasi.compiler.utiles.Tokens.Token;
 
 import java.util.ArrayList;
@@ -12,15 +13,18 @@ import static com.idorasi.compiler.utiles.Atom.*;
 
 public class SyntacticAnalyzer {
 
-    private List<Token> tokens = new ArrayList<>();
+    private List<Token> tokens;
     private List<Token> tokenCache;
     private Iterator<Token> atomIterator;
-    private Iterator<Token> cachedIterator = null;
 
     public SyntacticAnalyzer(List<Token> tokens) {
         this.tokens = tokens;
         atomIterator = this.tokens.iterator();
-        unit();
+        try {
+            unit();
+        }catch(Exception e){
+            System.out.println(e);
+        }
     }
 
 
@@ -34,7 +38,7 @@ public class SyntacticAnalyzer {
         return false;
     }
 
-    private boolean unit(){
+    private boolean unit() throws missingTokenException{
 
         for(;;){
 
@@ -51,7 +55,7 @@ public class SyntacticAnalyzer {
     }
 
     private boolean declStruct() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(consume(STRUCT)){
             if(consume(ID)){
                 if(consume(LACC)){
@@ -66,12 +70,13 @@ public class SyntacticAnalyzer {
                 } else throw  new missingTokenException(atomIterator.next(),"Missing LACC after ID");
             }else throw new missingTokenException(atomIterator.next(),"Missing ID after STRUCT");
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
     private boolean declVar() {
-        cache();
+        Cache cache = new Cache(tokens);
 
         if(typeBase()){
             if(consume(ID)){
@@ -90,7 +95,8 @@ public class SyntacticAnalyzer {
             }else throw new missingTokenException(atomIterator.next(),"Missing ID after typeBase");
         }
 
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
@@ -112,7 +118,7 @@ public class SyntacticAnalyzer {
     }
 
     private boolean typeBase(){
-        cache();
+        Cache cache = new Cache(tokens);
 
         if(consume(INT) || consume(DOUBLE) || consume(CHAR)){
             return true;
@@ -122,12 +128,13 @@ public class SyntacticAnalyzer {
             }
         }
 
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
     private boolean declFunct() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(typeBase()){
             consume(MUL);
         }else if(consume(VOID)){
@@ -136,7 +143,7 @@ public class SyntacticAnalyzer {
             if(consume(LPAR)){
                 if(functArg()){
                     while(consume(COMMA)){
-                        if(functArg()){};
+                        if(functArg()){}
                     }
                 }else{
                     if(consume(RPAR)){
@@ -148,16 +155,16 @@ public class SyntacticAnalyzer {
             }
         }
 
-        restoreFromCache();
-
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
     private boolean stmCompound() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(consume(LACC)) {
             for (; ; ) {
-                if (declVar() | stm()) {
+                if (declVar() || stm()) {
 
                 } else break;
             }
@@ -165,25 +172,27 @@ public class SyntacticAnalyzer {
                 return true;
             }else throw new missingTokenException(atomIterator.next(),"Missing RACC in stmCompound");
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
     private boolean functArg() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(typeBase()){
             if(consume(ID)){
                 arrayDecl();
                 return true;
             }else throw new missingTokenException(atomIterator.next(),"Missing ID in functArg");
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
 
     private boolean stm() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(stmCompound()){
             return true;
         }else if(consume(IF)){
@@ -244,7 +253,8 @@ public class SyntacticAnalyzer {
             }
         }
 
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
 
     }
@@ -257,15 +267,21 @@ public class SyntacticAnalyzer {
     }
 
     private boolean exprAssign(){
-        cache();
+        Cache cache = new Cache(tokens);
         if(exprUnary()){
             if(consume(ASSIGN)){
-                if(exprAssign() | exprOr()){
+                if(exprAssign()){
+                    return true;
+                }else if(exprOr()){
                     return true;
                 }
-            }else throw new missingTokenException(atomIterator.next(),"Missing ASSIGN");
+            }else if(exprOr()){
+                return true;
+            }
+            throw new missingTokenException(atomIterator.next(),"Missing ASSIGN");
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
     private boolean exprOrPrim(){
@@ -280,13 +296,14 @@ public class SyntacticAnalyzer {
     }
 
     private boolean exprOr() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(exprAnd()){
             if(exprOrPrim()){
                 return true;
             }
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
@@ -303,14 +320,15 @@ public class SyntacticAnalyzer {
     }
 
     private boolean exprAnd() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(exprEq()){
             if(exprAndPrim()){
                 return true;
 
             }
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
@@ -326,13 +344,14 @@ public class SyntacticAnalyzer {
     }
 
     private boolean exprEq() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(exprRel()){
             if(exprEqPrim()){
                 return true;
             }
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
@@ -349,13 +368,14 @@ public class SyntacticAnalyzer {
     }
 
     private boolean exprRel() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(exprAdd()){
             if(exprRelPrim()){
                 return true;
             }
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
@@ -371,36 +391,139 @@ public class SyntacticAnalyzer {
     }
 
     private boolean exprAdd() {
-        cache();
+        Cache cache = new Cache(tokens);
         if(exprMul()){
             if(exprAddPrim()){
                 return true;
             }
         }
-        restoreFromCache();
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
+        return true;
+    }
+
+    private boolean exprMulPrim() {
+        if(consume(MUL) || consume(DIV)){
+            if(exprCast()){
+                if(exprMulPrim()){
+                    return true;
+                }
+            }else throw new missingTokenException(atomIterator.next(),"Missing operand after * or /");
+        }
         return true;
     }
 
     private boolean exprMul() {
+        Cache cache = new Cache(tokens);
+        if(exprCast()){
+            if(exprMulPrim()){
+                return true;
+            }
+            else throw new missingTokenException(atomIterator.next(),"Missing exprMul");
+        }
+
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
+        return false;
+    }
+
+    private boolean exprCast() {
+        Cache cache = new Cache(tokens);
+        if(consume(LPAR)){
+            if(typeName()){
+                if(consume(RPAR)){
+                    if(exprCast()){
+                        return true;
+                    }
+                }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
+            }else throw new missingTokenException(atomIterator.next(),"Missing typeName");
+        } else if (exprUnary()) {
+            return true;
+        }
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
     private boolean exprUnary() {
+        Cache cache = new Cache(tokens);
+        if(consume(SUB) || consume(NOT)){
+            if(exprUnary()){
+                return true;
+            }
+            }else if(exprPostfix()){
+            return true;
+        }
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
         return false;
     }
 
+    private boolean exprPostfixPrim() {
+        if(consume(LBRACKET)){
+            if(expr()){
+                if(consume(RBRACKET)){
+                    if(exprPostfixPrim()){
+                        return true;
+                    }
+                }else throw new missingTokenException(atomIterator.next(),"Missing RBRACKET");
+            }
+        }else if(consume(DOT)){
+            if(consume(ID)){
+                if(exprPostfixPrim()){
+                    return true;
+                }
+            }
+        }
+        return true;
+    }
 
-    private void cache(){
+    private boolean exprPostfix() {
+        Cache cache = new Cache(tokens);
+        if(exprPrimary()){
+            if(exprPostfixPrim()){
+                return true;
+            }
 
-        tokenCache = tokens;
-        cachedIterator = atomIterator;
+            throw new missingTokenException(atomIterator.next(),"Error in postFix");
+        }
+
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
+        return false;
 
     }
 
-    private void restoreFromCache(){
+    private boolean exprPrimary() {
+        Cache cache = new Cache(tokens);
+        if(consume(ID)){
+            if(consume(LPAR)){
+                if(expr()){
+                    while(consume(COMMA)){
+                        if(!expr())
+                            return false;
+                    }
+                }
+                if(consume(RPAR)){
+                    return true;
+                }
+            }
+            return true;
+        }
+        if(consume(CT_INT) || consume(CT_REAL)|| consume(CT_CHAR) || consume(CT_STRING)) {
+            return true;
+        }
+        if(consume(LPAR)) {
+            if (expr()) {
+                if (consume(RPAR)) {
+                    return true;
+                }
+            }
+        }
 
-        tokens = tokenCache;
-        atomIterator = cachedIterator;
+        tokens = cache.restoreCache();
+        atomIterator = tokens.iterator();
+        return false;
 
     }
 }

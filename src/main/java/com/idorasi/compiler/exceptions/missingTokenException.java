@@ -4,12 +4,12 @@ import com.idorasi.compiler.utiles.Tokens.Token;
 
 public class missingTokenException extends RuntimeException {
 
-    private String message;
     private Token tk;
+    private String message;
 
     public missingTokenException(Token tk,String message) {
-        this.tk = tk;
         this.message = message;
+        this.tk = tk;
     }
 
     public String toString(){
