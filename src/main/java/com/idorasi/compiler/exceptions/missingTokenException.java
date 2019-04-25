@@ -10,6 +10,7 @@ public class missingTokenException extends RuntimeException {
     public missingTokenException(Token tk,String message) {
         this.message = message;
         this.tk = tk;
+
     }
 
     public String toString(){

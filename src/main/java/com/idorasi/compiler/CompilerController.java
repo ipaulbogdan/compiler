@@ -19,6 +19,9 @@ import static com.idorasi.compiler.utiles.Atom.END;
 @RequestMapping("/")
 public class CompilerController {
 
+
+    private LexicalAnalyzer lexicalAnalyzer;
+    private SyntacticAnalyzer syntacticAnalyzer;
     private static List<Token> tokens = new ArrayList<>();
     private static int line=1;
 
@@ -30,12 +33,14 @@ public class CompilerController {
     }
 
     private void compile(String input){
-        LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(input);
+        lexicalAnalyzer = new LexicalAnalyzer(input);
         lexicalAnalyzer.resetCompiler();
+
         line=1;
         while(lexicalAnalyzer.getNextToken()!=END){ }
 
-        SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(tokens);
+        syntacticAnalyzer = new SyntacticAnalyzer(tokens);
+        syntacticAnalyzer.start();
 
 
     }

@@ -13,28 +13,28 @@ import static com.idorasi.compiler.utiles.Atom.*;
 
 public class SyntacticAnalyzer {
 
-    private List<Token> tokens;
-    private List<Token> tokenCache;
-    private Iterator<Token> atomIterator;
+    private List<Token> tokens;;
 
     public SyntacticAnalyzer(List<Token> tokens) {
         this.tokens = tokens;
-        atomIterator = this.tokens.iterator();
-        try {
+    }
+
+
+    public void start(){
+        try{
             unit();
-        }catch(Exception e){
+        }catch (Exception e){
             System.out.println(e);
         }
     }
 
 
     private boolean consume(Atom code) {
-        if(atomIterator.hasNext()){
-            if(atomIterator.next().getCode()==code) {
-                atomIterator.remove();
-                return true;
-            }
+        if(tokens.get(0).getCode() == code) {
+            tokens.remove(0);
+            return true;
         }
+
         return false;
     }
 
@@ -65,13 +65,13 @@ public class SyntacticAnalyzer {
                    if(consume(RACC)){
                         if(consume(SEMICOLON)){
                             return true;
-                        }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON after STRUCT statement");
-                    } else throw new missingTokenException(atomIterator.next(),"Missing RACC after declVar");
-                } else throw  new missingTokenException(atomIterator.next(),"Missing LACC after ID");
-            }else throw new missingTokenException(atomIterator.next(),"Missing ID after STRUCT");
+                        }else throw new missingTokenException(tokens.get(0),"Missing SEMICOLON after STRUCT statement");
+                    } else throw new missingTokenException(tokens.get(0),"Missing RACC after declVar");
+                } else throw  new missingTokenException(tokens.get(0),"Missing LACC after ID");
+            }else throw new missingTokenException(tokens.get(0),"Missing ID after STRUCT");
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -85,18 +85,18 @@ public class SyntacticAnalyzer {
                     if(consume(COMMA)){
                         if(consume(ID)){
                             arrayDecl();
-                        }else throw new missingTokenException(atomIterator.next(),"Missing ID after COMMA");
+                        }else throw new missingTokenException(tokens.get(0),"Missing ID after COMMA");
                     } else break;
                 }
                 if(consume(SEMICOLON)){
                     return true;
 
-                }throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON after ID");
-            }else throw new missingTokenException(atomIterator.next(),"Missing ID after typeBase");
+                }throw new missingTokenException(tokens.get(0),"Missing SEMICOLON after ID");
+            }else throw new missingTokenException(tokens.get(0),"Missing ID after typeBase");
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -104,7 +104,7 @@ public class SyntacticAnalyzer {
         if(consume(LBRACKET)){
             expr();
             if(consume(RBRACKET)){
-            }else throw new missingTokenException(atomIterator.next(),"Missing RBRACKET");
+            }else throw new missingTokenException(tokens.get(0),"Missing RBRACKET");
         }
     }
 
@@ -129,7 +129,7 @@ public class SyntacticAnalyzer {
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+       
         return false;
     }
 
@@ -149,14 +149,14 @@ public class SyntacticAnalyzer {
                     if(consume(RPAR)){
                         if(stmCompound()){
                             return true;
-                        } else throw new missingTokenException(atomIterator.next(),"Missing stmCompound");
-                    }else throw new missingTokenException(atomIterator.next(),"Missing RPAR in declFunct()");
+                        } else throw new missingTokenException(tokens.get(0),"Missing stmCompound");
+                    }else throw new missingTokenException(tokens.get(0),"Missing RPAR in declFunct()");
                 }
             }
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+        
         return false;
     }
 
@@ -170,10 +170,10 @@ public class SyntacticAnalyzer {
             }
             if(consume(RACC)){
                 return true;
-            }else throw new missingTokenException(atomIterator.next(),"Missing RACC in stmCompound");
+            }else throw new missingTokenException(tokens.get(0),"Missing RACC in stmCompound");
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+        
         return false;
     }
 
@@ -183,10 +183,10 @@ public class SyntacticAnalyzer {
             if(consume(ID)){
                 arrayDecl();
                 return true;
-            }else throw new missingTokenException(atomIterator.next(),"Missing ID in functArg");
+            }else throw new missingTokenException(tokens.get(0),"Missing ID in functArg");
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+        
         return false;
     }
 
@@ -203,23 +203,23 @@ public class SyntacticAnalyzer {
                                 if(consume(ELSE)){
                                     if(stm()){
                                         return true;
-                                    }else throw new missingTokenException(atomIterator.next(),"Expecting statement after ELSE");
+                                    }else throw new missingTokenException(tokens.get(0),"Expecting statement after ELSE");
                                 }
                                 return true;
-                            }else throw new missingTokenException(atomIterator.next(),"Missing statement after IF");
-                        }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
-                    }else throw new missingTokenException(atomIterator.next(),"Missing EXPR in IF");
-                }else throw new missingTokenException(atomIterator.next(),"Missing LPAR afer IF");
+                            }else throw new missingTokenException(tokens.get(0),"Missing statement after IF");
+                        }else throw new missingTokenException(tokens.get(0),"Missing RPAR");
+                    }else throw new missingTokenException(tokens.get(0),"Missing EXPR in IF");
+                }else throw new missingTokenException(tokens.get(0),"Missing LPAR afer IF");
         }else if(consume(WHILE)){
             if(consume(LPAR)){
                 if(expr()){
                     if(consume(RPAR)){
                         if(stm()){
                             return true;
-                        }else throw new missingTokenException(atomIterator.next(),"Missing Statement after WHILE");
-                    }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
-                }else throw new missingTokenException(atomIterator.next(),"Missing EXPR");
-            }else throw new missingTokenException(atomIterator.next(),"Missing LPAR");
+                        }else throw new missingTokenException(tokens.get(0),"Missing Statement after WHILE");
+                    }else throw new missingTokenException(tokens.get(0),"Missing RPAR");
+                }else throw new missingTokenException(tokens.get(0),"Missing EXPR");
+            }else throw new missingTokenException(tokens.get(0),"Missing LPAR");
         }else if(consume(FOR)){
             if(consume(LPAR)){
                 expr();
@@ -230,22 +230,22 @@ public class SyntacticAnalyzer {
                         if(consume(RPAR)){
                             if(stm()){
                                 return true;
-                            }else throw new missingTokenException(atomIterator.next(),"Missing Statement after FOR");
-                        }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
+                            }else throw new missingTokenException(tokens.get(0),"Missing Statement after FOR");
+                        }else throw new missingTokenException(tokens.get(0),"Missing RPAR");
 
-                    }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON");
-                }else throw  new missingTokenException(atomIterator.next(),"Missing SEMICOLON");
-            }else throw new missingTokenException(atomIterator.next(),"Missing LPAR");
+                    }else throw new missingTokenException(tokens.get(0),"Missing SEMICOLON");
+                }else throw  new missingTokenException(tokens.get(0),"Missing SEMICOLON");
+            }else throw new missingTokenException(tokens.get(0),"Missing LPAR");
 
         }else if(consume(BREAK)){
             if(consume(SEMICOLON)){
                 return true;
-            }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON");
+            }else throw new missingTokenException(tokens.get(0),"Missing SEMICOLON");
         }else if(consume(RETURN)){
             expr();
             if(consume(SEMICOLON)){
                 return true;
-            }else throw new missingTokenException(atomIterator.next(),"Missing SEMICOLON after RETURN");
+            }else throw new missingTokenException(tokens.get(0),"Missing SEMICOLON after RETURN");
         }else{
             expr();
             if(consume(SEMICOLON)){
@@ -254,7 +254,6 @@ public class SyntacticAnalyzer {
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
         return false;
 
     }
@@ -272,16 +271,15 @@ public class SyntacticAnalyzer {
             if(consume(ASSIGN)){
                 if(exprAssign()){
                     return true;
-                }else if(exprOr()){
-                    return true;
                 }
-            }else if(exprOr()){
-                return true;
             }
-            throw new missingTokenException(atomIterator.next(),"Missing ASSIGN");
+        }
+        if(exprOr()){
+                return true;
+
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
     private boolean exprOrPrim(){
@@ -303,7 +301,7 @@ public class SyntacticAnalyzer {
             }
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -313,7 +311,7 @@ public class SyntacticAnalyzer {
                 if(exprAndPrim()){
                     return true;
                 }
-            }throw new missingTokenException(atomIterator.next(),"Missing operand after AND");
+            }throw new missingTokenException(tokens.get(0),"Missing operand after AND");
         }
 
         return true;
@@ -328,7 +326,7 @@ public class SyntacticAnalyzer {
             }
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -338,7 +336,7 @@ public class SyntacticAnalyzer {
                 if(exprEqPrim()){
                     return true;
                 }
-            }else throw new missingTokenException(atomIterator.next(),"Missing operand after eq operand");
+            }else throw new missingTokenException(tokens.get(0),"Missing operand after eq operand");
         }
         return true;
     }
@@ -351,7 +349,7 @@ public class SyntacticAnalyzer {
             }
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -361,7 +359,7 @@ public class SyntacticAnalyzer {
                 if(exprRelPrim()){
                     return true;
                 }
-            }else throw new missingTokenException(atomIterator.next(),"Missing operand");
+            }else throw new missingTokenException(tokens.get(0),"Missing operand");
         }
 
         return true;
@@ -375,7 +373,7 @@ public class SyntacticAnalyzer {
             }
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -385,7 +383,7 @@ public class SyntacticAnalyzer {
                 if(exprAddPrim()){
                     return true;
                 }
-            }throw new missingTokenException(atomIterator.next(),"Missing operand after + or -");
+            }throw new missingTokenException(tokens.get(0),"Missing operand after + or -");
         }
         return true;
     }
@@ -398,7 +396,7 @@ public class SyntacticAnalyzer {
             }
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return true;
     }
 
@@ -408,7 +406,7 @@ public class SyntacticAnalyzer {
                 if(exprMulPrim()){
                     return true;
                 }
-            }else throw new missingTokenException(atomIterator.next(),"Missing operand after * or /");
+            }else throw new missingTokenException(tokens.get(0),"Missing operand after * or /");
         }
         return true;
     }
@@ -419,11 +417,11 @@ public class SyntacticAnalyzer {
             if(exprMulPrim()){
                 return true;
             }
-            else throw new missingTokenException(atomIterator.next(),"Missing exprMul");
+            else throw new missingTokenException(tokens.get(0),"Missing exprMul");
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -435,13 +433,13 @@ public class SyntacticAnalyzer {
                     if(exprCast()){
                         return true;
                     }
-                }else throw new missingTokenException(atomIterator.next(),"Missing RPAR");
-            }else throw new missingTokenException(atomIterator.next(),"Missing typeName");
+                }else throw new missingTokenException(tokens.get(0),"Missing RPAR");
+            }else throw new missingTokenException(tokens.get(0),"Missing typeName");
         } else if (exprUnary()) {
             return true;
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -455,7 +453,7 @@ public class SyntacticAnalyzer {
             return true;
         }
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
     }
 
@@ -466,7 +464,7 @@ public class SyntacticAnalyzer {
                     if(exprPostfixPrim()){
                         return true;
                     }
-                }else throw new missingTokenException(atomIterator.next(),"Missing RBRACKET");
+                }else throw new missingTokenException(tokens.get(0),"Missing RBRACKET");
             }
         }else if(consume(DOT)){
             if(consume(ID)){
@@ -485,11 +483,11 @@ public class SyntacticAnalyzer {
                 return true;
             }
 
-            throw new missingTokenException(atomIterator.next(),"Error in postFix");
+            throw new missingTokenException(tokens.get(0),"Error in postFix");
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
 
     }
@@ -522,7 +520,7 @@ public class SyntacticAnalyzer {
         }
 
         tokens = cache.restoreCache();
-        atomIterator = tokens.iterator();
+
         return false;
 
     }
