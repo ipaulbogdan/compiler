@@ -1,6 +1,6 @@
 package com.idorasi.compiler.utiles.Tokens;
 
-import com.idorasi.compiler.utiles.Atom;
+import com.idorasi.compiler.utiles.Enum.Atom;
 
 abstract public class Token {
 

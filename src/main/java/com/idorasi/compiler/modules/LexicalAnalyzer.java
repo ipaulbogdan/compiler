@@ -1,10 +1,10 @@
 package com.idorasi.compiler.modules;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.utiles.Atom;
+import com.idorasi.compiler.utiles.Enum.Atom;
 import com.idorasi.compiler.utiles.Tokens.*;
 
-import static com.idorasi.compiler.utiles.Atom.*;
+import static com.idorasi.compiler.utiles.Enum.Atom.*;
 
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;

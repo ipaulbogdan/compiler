@@ -1,13 +1,13 @@
 package com.idorasi.compiler.modules;
 
 import com.idorasi.compiler.exceptions.missingTokenException;
-import com.idorasi.compiler.utiles.Atom;
+import com.idorasi.compiler.utiles.Enum.Atom;
 import com.idorasi.compiler.utiles.Cache;
 import com.idorasi.compiler.utiles.Tokens.Token;
 
 import java.util.List;
 
-import static com.idorasi.compiler.utiles.Atom.*;
+import static com.idorasi.compiler.utiles.Enum.Atom.*;
 
 public class SyntacticAnalyzer {
 

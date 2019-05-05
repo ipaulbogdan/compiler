@@ -1,4 +1,4 @@
-package com.idorasi.compiler.utiles;
+package com.idorasi.compiler.utiles.Enum;
 
 public enum Atom {
 

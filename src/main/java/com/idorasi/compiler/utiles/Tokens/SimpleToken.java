@@ -1,7 +1,7 @@
 package com.idorasi.compiler.utiles.Tokens;
 
 import com.idorasi.compiler.CompilerController;
-import com.idorasi.compiler.utiles.Atom;
+import com.idorasi.compiler.utiles.Enum.Atom;
 
 public class SimpleToken extends Token{
 

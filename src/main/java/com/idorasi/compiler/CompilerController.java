@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.idorasi.compiler.utiles.Atom.END;
+import static com.idorasi.compiler.utiles.Enum.Atom.END;
 
 
 @RestController
