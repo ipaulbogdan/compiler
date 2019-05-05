@@ -5,8 +5,6 @@ import com.idorasi.compiler.utiles.Atom;
 import com.idorasi.compiler.utiles.Cache;
 import com.idorasi.compiler.utiles.Tokens.Token;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.idorasi.compiler.utiles.Atom.*;
@@ -20,12 +18,15 @@ public class SyntacticAnalyzer {
     }
 
 
-    public void start(){
+    public boolean start(){
         try{
             unit();
         }catch (Exception e){
             System.out.println(e);
+            return false;
         }
+
+        return true;
     }
 
 
@@ -135,25 +136,32 @@ public class SyntacticAnalyzer {
 
     private boolean declFunct() {
         Cache cache = new Cache(tokens);
+        boolean isFunc= false;
         if(typeBase()){
             consume(MUL);
+            isFunc = true;
         }else if(consume(VOID)){
+            isFunc = true;
         }else return false;
-        if(consume(ID)){
-            if(consume(LPAR)){
-                if(functArg()){
-                    while(consume(COMMA)){
-                        if(functArg()){}
+        if(isFunc) {
+            if (consume(ID)) {
+                if (consume(LPAR)) {
+                    if (functArg()) {
+                        while (consume(COMMA)) {
+                            if (functArg()) {
+                            }
+                        }
+                    } else {
+                        if (consume(RPAR)) {
+                            if (stmCompound()) {
+                                return true;
+                            } else throw new missingTokenException(tokens.get(0), "Missing stmCompound");
+                        } else throw new missingTokenException(tokens.get(0), "Missing RPAR in declFunct()");
                     }
-                }else{
-                    if(consume(RPAR)){
-                        if(stmCompound()){
-                            return true;
-                        } else throw new missingTokenException(tokens.get(0),"Missing stmCompound");
-                    }else throw new missingTokenException(tokens.get(0),"Missing RPAR in declFunct()");
-                }
-            }
+                } else throw new missingTokenException(tokens.get(0), "Missing LPAR in declFunct()");
+            } throw new missingTokenException(tokens.get(0),"Missing function ID");
         }
+
 
         tokens = cache.restoreCache();
         

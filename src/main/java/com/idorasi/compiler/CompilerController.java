@@ -3,6 +3,7 @@ package com.idorasi.compiler;
 import com.idorasi.compiler.modules.LexicalAnalyzer;
 import com.idorasi.compiler.modules.SyntacticAnalyzer;
 import com.idorasi.compiler.utiles.Tokens.Token;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,27 +23,32 @@ public class CompilerController {
 
     private LexicalAnalyzer lexicalAnalyzer;
     private SyntacticAnalyzer syntacticAnalyzer;
-    private static List<Token> tokens = new ArrayList<>();
+    private static List<Token> tokens;
     private static int line=1;
 
 
 
     @PostMapping("/compile")
-    public void setInput(@RequestBody String input){
-        compile(input);
+    public ResponseEntity<String> setInput(@RequestBody String input){
+        if(compile(input)) {
+            return ResponseEntity.ok("Success");
+        }
+
+        return ResponseEntity.ok("Compile error");
     }
 
-    private void compile(String input){
+    private boolean compile(String input){
         lexicalAnalyzer = new LexicalAnalyzer(input);
+
         lexicalAnalyzer.resetCompiler();
+        tokens = new ArrayList<>();
 
         line=1;
         while(lexicalAnalyzer.getNextToken()!=END){ }
 
         syntacticAnalyzer = new SyntacticAnalyzer(tokens);
-        syntacticAnalyzer.start();
 
-
+        return syntacticAnalyzer.start();
     }
 
     private void printTokens() {
